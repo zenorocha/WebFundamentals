@@ -1,9 +1,9 @@
 ---
 layout: shared/narrow
 title: "Create a great notification"
-description: ""
+description: "t's not enough to send notifications to users. Notifications have to be attractive and relevant, but not spammy. The Notification API provides everything you need to accomplish this. You just need to implement it."
 published_on: 2015-10-02
-updated_on: 2015-10-02
+updated_on: 2015-10-05
 order: 4
 authors:
   - josephmedley
@@ -11,8 +11,12 @@ translation_priority: 1
 ---
 
 <p class="intro">
-
+  It's not enough to send notifications to users. Notifications have to be 
+  attractive and relevant, but not spammy. The Notification API provides 
+  everything you need to accomplish this. You just need to implement it.
 </p>
+
+{% include shared/toc.liquid %}
 
 ## Always use a title, description, and icon
 
@@ -72,3 +76,26 @@ do something like this:
 
 Notice that this message has also pluralized the text to make it clear that
 more than one update is available.
+
+# Use the tag option to group messages
+
+If you send to notifications with the same tag name, the last one will replace the first one. Fortunately, ServiceWorkerRegistration.getNotifications() returns an array of recent messages. Use this to get everything that's available then triage and merge them as appropriate.
+
+{% highlight javascript %}
+self.addEventListener('push', function(event) {
+  console.log('Received a push message', event);
+
+  event.waitUntil(
+    self.registration.getNotifications()
+      .then(function(notifications) {
+        //concatenate notifications here.
+        self.registration.showNotification(title, {
+          body: "Some merged content.",
+          icon: icon,
+          tag: tag
+        });
+	}
+    });
+  );
+});
+{% endhighlight %}
